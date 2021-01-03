@@ -49,27 +49,27 @@ export class Logger {
     })
   }
 
-  public trace(...args: any[]): void {
-    this.logger.log('trace', args)
+  public trace(message: any,...args: any[]): void {
+    this.logger.log('trace', message, args)
   }
 
-  public info(...args: any[]): void {
-    this.logger.info(args)
+  public info(message: any,...args: any[]): void {
+    this.logger.info(message, args)
   }
 
-  public debug(...args: any[]): void {
-    this.logger.debug(args)
+  public debug(message: any, ...args: any[]): void {
+    this.logger.debug(message, args)
   }
 
-  public warn(...args: any[]): void {
-    this.logger.warn(args)
+  public warn(message: any, ...args: any[]): void {
+    this.logger.warn(message, args)
   }
 
-  public error(...args: any[]): void {
-    this.logger.error(args)
+  public error(message: any, ...args: any[]): void {
+    this.logger.error(message, args)
   }
 
-  public fatal(...args: any[]): void {
-    this.logger.log('fatal', args)
+  public fatal(message: any,...args: any[]): void {
+    this.logger.log('fatal', message, args)
   }
 }

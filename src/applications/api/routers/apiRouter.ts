@@ -7,6 +7,10 @@ export const apiRouter = express.Router({
 apiRouter.get('/', [
   //
 ], async (req: express.Request, res: express.Response, next: NextFunction) => {
-  //
+  try {
+    //
+  } catch (err){
+    next (err)
+  }
 })
 

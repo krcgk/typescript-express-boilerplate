@@ -1,9 +1,9 @@
 import BullQueue, { Queue, Job as BullJob, DoneCallback } from 'bull'
 import { environment } from '../framework/environment'
 import { Job, SerializedJob } from '../../contracts/job/job'
-import { SampleJob } from '../jobs/example/sampleJob'
+import { JobManager } from './jobManager'
 
-export class QueueManager {
+export class QueueManager extends JobManager {
 
   public async push(job: Job): Promise<void> {
     const queue = BullQueue(environment.queue.name, {
@@ -32,7 +32,7 @@ export class QueueManager {
   public async process(bullJob: BullJob, done: DoneCallback): Promise<void> {
     const serializedJob = bullJob.data as SerializedJob
 
-    const job = this.resolveJob(serializedJob.jobName)
+    const job = this.jobResolver(serializedJob.jobName)
 
     if (job) {
       job.setParameters(serializedJob.jobParameters)
@@ -47,14 +47,5 @@ export class QueueManager {
     } else {
       done(new Error('Invalid Job'))
     }
-  }
-
-  private resolveJob(jobName: string): Job {
-    let job: Job | null = null
-    if (jobName === 'SampleJob') {
-      job = new SampleJob()
-    }
-
-    return job
   }
 }

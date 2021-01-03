@@ -1,27 +1,48 @@
 import http from 'http'
-import express from 'express'
-import socketIO from 'socket.io'
-import { Application } from "./../../contracts/core/application"
+import { v4 } from 'uuid'
+import { Server } from 'ws'
+import { NativeWebSocket } from '../../contracts/core/websocket'
 import { environment } from '../../lib/framework/environment'
-import { ioc } from '../../lib/utils'
+import { Application } from "./../../contracts/core/application"
 
 export class SocketApplication implements Application {
   name: 'SocketApplication'
 
+  wss: Server
+
   public async run(): Promise<void> {
-    const socket = express()
-    const server = new http.Server(socket)
-    const io = new socketIO.Server(server, {
-      serveClient: false
+    const server = http.createServer()
+
+    server.listen(environment.socket.port)
+
+    this.wss = new Server({
+      server: server
     })
 
-    io.on("connection", function (socket: socketIO.Socket) {
-      ioc.logger.debug(`a user connected: ${socket.id}`)
+    this.wss.on('connection', (ws: NativeWebSocket) => {
+      ws.id = v4()
+      ws.isAlive = true
+
+      ws.on('pong', () => {
+        ws.isAlive = true
+      })
+
+      ws.on('close', () => {
+        ws.isAlive = false
+      })
     })
 
-    server.listen(environment.socket.port, function () {
-      //
-    })
+    setInterval(()=>{
+      this.wss.clients.forEach((ws: NativeWebSocket) => {
+        if (ws.isAlive === false){
+          return ws.terminate()
+        }
+        ws.isAlive = false
+        ws.ping(() => {
+          //
+        })
+      })
+  }, 3000)
   }
 
 }

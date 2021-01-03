@@ -4,6 +4,7 @@ import express, { NextFunction } from 'express'
 import { environment } from './../../lib/framework/environment'
 import { Application } from "./../../contracts/core/application"
 import { ioc } from '../../lib/utils'
+import { maintenanceMiddleware } from '../api/middlewares'
 
 export class WebApplication implements Application {
   name: 'WebApplication'
@@ -11,8 +12,8 @@ export class WebApplication implements Application {
   public async run(): Promise<void> {
     const web = express()
 
-    this.registerMiddlewares(web)
     this.registerConfiguration(web)
+    this.registerMiddlewares(web)
     this.registerRouters(web)
     this.registerErrorHandler(web)
 
@@ -22,16 +23,19 @@ export class WebApplication implements Application {
   }
 
   private registerConfiguration(web: express.Express) {
+    // Template Engine
     web.set('view engine', 'pug')
-
     web.set('views', path.join(__dirname, '../../../views/default'))
 
+    // Statics
     web.use('/static', express.static(path.join(__dirname, '../../../static')))
   }
 
   private registerMiddlewares(web: express.Express) {
+    web.use(maintenanceMiddleware)
+
     web.use(helmet({
-      //
+      contentSecurityPolicy: false
     }))
   }
 
@@ -43,7 +47,7 @@ export class WebApplication implements Application {
 
   private registerErrorHandler(web: express.Express) {
     web.use(async ( err: Error, req: express.Request, res: express.Response, next: NextFunction) => {
-      ioc.logger.error(err)
+      ioc.logger.error('WebApplication', err)
 
       res.render('pages/error', {
         error: err.name,

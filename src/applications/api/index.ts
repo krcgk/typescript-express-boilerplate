@@ -45,7 +45,7 @@ export class ApiApplication implements Application {
   private registerErrorHandler(api: express.Express) {
     api.use(async ( err: Error, req: express.Request, res: express.Response, next: NextFunction) => {
       if (err instanceof BaseError) {
-        ioc.logger.error(err)
+        ioc.logger.error('ApiApplication', err)
 
         res.status(err.httpCode).json({
           error: {
@@ -55,7 +55,7 @@ export class ApiApplication implements Application {
           }
         })
       } else {
-        ioc.logger.error(err)
+        ioc.logger.error('ApiApplication', err)
 
         res.status(500).json({
           error: {

@@ -34,9 +34,9 @@ npm run test
 - [ ] DTO Objects
 - [ ] Cluster Support
 - [ ] oAuth Support
-- [ ] Websocket Support
+- [x] Websocket Support
 - [ ] Sync Jobs
-- [ ] Cron Jobs
+- [x] Cron Jobs
 - [x] Queued Jobs
 
 ### Current Packages

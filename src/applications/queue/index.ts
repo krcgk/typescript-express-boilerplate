@@ -1,5 +1,5 @@
 import { DoneCallback, Job } from "bull"
-import { QueueManager } from "../../lib/queue/queueManager"
+import { QueueManager } from "../../lib/managers/queueManager"
 import { Application } from "./../../contracts/core/application"
 
 export class QueueApplication implements Application {
