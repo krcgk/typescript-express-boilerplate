@@ -1,0 +1,1 @@
+export { maintenanceMiddleware } from "./maintenance"

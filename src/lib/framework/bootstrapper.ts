@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import { Inject, Service } from "typedi"
+import { errorHandler } from '../errors/errorHandler'
 import { Worker } from "./../../contracts/core/worker"
 import { IoC } from "./ioc"
 
@@ -14,9 +15,8 @@ export class Bootstrapper {
     this.workers[application] = callback
   }
 
-
   public async register(application: string, callback: () => Promise<void>): Promise<Worker> {
-    await this.loadLibraries()
+    this.registerErrorHandler()
 
     await callback()
 
@@ -27,7 +27,13 @@ export class Bootstrapper {
     return await this.workers[application](this.ioc)
   }
 
-  private async loadLibraries(): Promise<void> {
-    //
+  private registerErrorHandler(): void {
+    process.on('uncaughtException', (error: Error) => {
+      errorHandler.handleError(error)
+
+      if (!errorHandler.isTrustedError(error)) {
+        process.exit(1)
+      }
+    })
   }
 }

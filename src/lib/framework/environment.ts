@@ -18,14 +18,18 @@ export const environment = {
   isLocal: argv.environment === 'local',
   isTest: argv.environment === 'test',
   worker: argv.application,
+  maintenance: false,
   log: {
     level: 'debug'
   },
   api: {
-    port: argv.port || 5001
+    port: argv.port || 8121
+  },
+  web: {
+    port: argv.port || 8120
   },
   socket: {
-    port: argv.port || 5002
+    port: argv.port || 8122
   },
   queue: {
     name: 'main queue'
@@ -35,5 +39,10 @@ export const environment = {
     host: '127.0.0.1',
     port: 6379,
     password: null
+  },
+
+  session: {
+    prefix: 'boilerplate',
+    secret: 'session-secret'
   }
 }

@@ -8,6 +8,7 @@ import { Container } from "typedi"
 import { environment } from "./lib/framework/environment"
 import { Bootstrapper } from "./lib/framework/bootstrapper"
 import { ApiWorker } from "./workers/api"
+import { WebWorker } from "./workers/web"
 import { CronWorker } from "./workers/cron"
 import { QueueWorker } from "./workers/queue"
 import { SocketWorker } from "./workers/socket"
@@ -20,6 +21,10 @@ bootstrapper.register(environment.worker, async () => {
 
   await bootstrapper.registerWorker('api', async () => {
     return new ApiWorker()
+  })
+
+  await bootstrapper.registerWorker('web', async () => {
+    return new WebWorker()
   })
 
   await bootstrapper.registerWorker('socket', async () => {

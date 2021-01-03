@@ -11,7 +11,9 @@ export class SocketApplication implements Application {
   public async run(): Promise<void> {
     const socket = express()
     const server = new http.Server(socket)
-    const io = new socketIO.Server(server)
+    const io = new socketIO.Server(server, {
+      serveClient: false
+    })
 
     io.on("connection", function (socket: socketIO.Socket) {
       ioc.logger.debug(`a user connected: ${socket.id}`)
